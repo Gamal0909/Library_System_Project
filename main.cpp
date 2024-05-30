@@ -3,30 +3,33 @@
 using namespace std;
 
 struct book{
-   int id,total_borrowed,total_quantity;
-   string name;
+    int id,total_borrowed,total_quantity;
+    string name;
 
-   book(){
-    id=-1;
-    total_borrowed=total_quantity=0;
-    name="";
-   }
+    book(){
+        id=-1;
+        total_borrowed=total_quantity=0;
+        name="";
+    }
 
-   void add_book(){
-     cout << "Enter book info: id & name & total quantity: ";
-     cin>>id>>name>>total_quantity;
-     total_borrowed=0;
-   }
-   bool can_borrow(int user_id){
-     if(total_quantity-total_borrowed<=0)return false;
-     total_borrowed+=1;
-     return true;
-   }
-   void return_book(){
+    void add_book(){
+        cout << "Enter book info: id & name & total quantity: ";
+        cin>>id;
+        cin.ignore();
+        getline(cin, name);
+        cin>>total_quantity;
+        total_borrowed=0;
+    }
+    bool can_borrow(int user_id){
+        if(total_quantity-total_borrowed<=0)return false;
+        total_borrowed+=1;
+        return true;
+    }
+    void return_book(){
         assert(total_borrowed>0);
         total_borrowed-=1;
-   }
-   bool has_prefix(string prefix){
+    }
+    bool has_prefix(string prefix){
         if(name.size()> prefix.size())return false;
         for(int i=0;i<prefix.size();i++){
             if(prefix[i]!=name[i]){
@@ -34,13 +37,13 @@ struct book{
             }
         }
         return true;
-   }
-   void print(){
-    cout<< "id = "<<id
-        << "name = "<<name
-        <<"total borrowed = "<<total_borrowed
-        <<"total quantity = "<<total_quantity<<endl;
-   }
+    }
+    void print(){
+        cout<< "id = "<<id
+            << "name = "<<name
+            <<"total borrowed = "<<total_borrowed
+            <<"total quantity = "<<total_quantity<<endl;
+    }
 };
 
 struct user{
@@ -93,14 +96,14 @@ bool cmp_book_by_id(book a,book b){
 bool cmp_book_by_name(book a,book b){
     return a.name<b.name;
 }
-struct library_system{
+
+
+struct library_system {
+    vector<book> books;
+    vector<user> users;
     int total_books,total_users;
-    vector<book>books;
-    vector<user>users;
-    library_system(){
-        total_books=total_users=0;
-    }
-    int menu(){
+
+    int menu() {
         cout << "\nLibrary Menu:\n";
         cout << "1) Add Book\n";
         cout << "2) Search Books by Prefix\n";
@@ -117,7 +120,7 @@ struct library_system{
         int choice;
         cin >> choice;
         return choice;
-        }
+    }
 
     void run() {
         int choice;
@@ -162,25 +165,31 @@ struct library_system{
 
     void add_book(){
         books[total_books++].add_book();
+        return;
     }
 
     void search_book_by_prefix(){
         cout<<"Enter Prefix"<<endl;
         string prefix;cin>>prefix;
-        bool check=true;
+        bool check=false;
         for(int i=0;i<total_books;i++){
             if(books[i].has_prefix(prefix)){
+                cout<<"*************************************"<<endl;
                 cout<<books[i].name<<endl;
-                check=false;
+                cout<<"*************************************"<<endl;
+                check=true;
             }
         }
-        if(check){
+        if(!check){
+            cout<<"*************************************"<<endl;
             cout<<"No books with such prefix"<<endl;
+            cout<<"*************************************"<<endl;
         }
+        return;
     }
 
     void print_who_borrowed_book_by_name(){
-        cout<<"Enter book name";
+        cout<<"Enter book name:\n";
         string book_name;cin>>book_name;
         int book_idx=find_book_idx_by_name(book_name);
         if(book_idx==-1){
@@ -197,6 +206,7 @@ struct library_system{
                 cout<<users[i].name<<endl;
             }
         }
+        return;
     }
 
     int find_book_idx_by_name(string book_name){
@@ -223,14 +233,9 @@ struct library_system{
     void user_borrow_book(){}
     void user_return_book(){}
     void print_users(){}
-    void Exit(){
-        exit(0);
-    }
-
 };
 
-int main()
-{
- library_system library;
- library.run();
+int main() {
+    library_system library;
+    library.run();
 }
